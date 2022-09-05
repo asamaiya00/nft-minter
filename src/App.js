@@ -1,23 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button } from 'react-bootstrap';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="row justify-content-center text-center mt-5">
+        <form className="col-lg-6 shadow p-3 mb-5 bg-white rounded">
+          <h4>Mint Portal</h4>
+          <h5>Please connect your wallet</h5>
+          <Button>Connect Wallet</Button>
+          <div className="my-3 card gap-3">
+            <label>Wallet Address</label>
+            <input className="mx-2" type="number" defaultValue={1} min={1} max={5} />
+            <label>Please select the number of NFTs to mint</label>
+            <Button>Mint</Button>
+          </div>
+          <label>Price 0.05 ETH each mint</label>
+        </form>
+      </div>
     </div>
   );
 }
