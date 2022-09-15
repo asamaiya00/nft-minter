@@ -1252,7 +1252,7 @@ contract AnimeshFirstNFT is ERC721Enumerable, Ownable {
     constructor() ERC721("Animesh's First NFT Collection", "AFN") {}
         // internal
         function _baseURI() internal view virtual override returns (string memory) {
-        return "ipfs://cid/";
+        return "ipfs://QmbYwrL5e4cdQkPZn4qkNRQbDgUUm3q7cTCRdmTfn51YVf/";
     }
         // public
 
