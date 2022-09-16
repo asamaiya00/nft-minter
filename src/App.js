@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import ABI from './ABI.json';
 import Web3 from 'web3';
 
-const ADDRESS = '0x6133152377a9dbbe7b9e812f514f884d59e2b0d1';
+const ADDRESS = '0x38ac452166A993A4031172c6802923DaA4215796';
 
 function App() {
   const mintAmountRef = useRef(1);
@@ -19,7 +19,6 @@ function App() {
     let web3 = new Web3(window.ethereum);
     await window.ethereum.request({ method: 'eth_requestAccounts' });
     const accounts = await web3.eth.getAccounts();
-    // console.log(accounts);
     setAddress(accounts[0]);
 
     setContract(new web3.eth.Contract(ABI, ADDRESS));
@@ -28,7 +27,6 @@ function App() {
   const mint = async () => {
     if (window.ethereum && address) {
       const mintAmount = Number(mintAmountRef.current.value);
-      console.log(mintAmount);
       if (mintAmount > 0 && mintAmount < 6) {
         const mintRate = await contract.methods.cost().call();
         const totalAmount = mintAmount * mintRate;
@@ -54,8 +52,8 @@ function App() {
               defaultValue={1}
               min={1}
               max={5}
-            />
-            <label>Please select the number of NFTs to mint</label>
+            /> 
+            <label>Please select the number of NFTs to mint (1-5)</label>
             <Button onClick={mint}>Mint</Button>
           </div>
           <label>Price 0.05 ETH each mint</label>
