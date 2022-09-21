@@ -8,27 +8,28 @@ import axios from 'axios';
 
 const CONTRACT_ADDRESS = '0x38ac452166A993A4031172c6802923DaA4215796';
 const BASE_URL = 'https://api-rinkeby.etherscan.io/api';
+const IMG_PATH =
+  'https://ipfs.io/ipfs/QmWVgiKR7XoCRENXVgNM3KhMB3Xvhoo6oEgqDcq3hnSduF/';
 
 function App() {
   const mintAmountRef = useRef(1);
   const [address, setAddress] = useState('');
   const [contract, setContract] = useState(null);
-  const [tokensMinted, setTokensMinted] = useState(null);
+  const [nftData, setNftData] = useState(null);
 
   useEffect(() => {
     window.process = {
       ...window.process,
     };
-    fetchTokensMinted();
+    fetchnftData();
   }, []);
 
-  const fetchTokensMinted = async () => {
-    const response = await axios.get(
+  const fetchnftData = async () => {
+    const nftDataResponse = await axios.get(
       BASE_URL +
-        `?module=stats&action=tokensupply&contractaddress=${CONTRACT_ADDRESS}&apikey=${process.env.REACT_APP_API_KEY}`
+        `?module=account&action=tokennfttx&contractaddress=${CONTRACT_ADDRESS}&page=1&offset=100&tag=latest&apikey=${process.env.REACT_APP_API_KEY}`
     );
-    console.log(response.data.result);
-    setTokensMinted(response.data.result);
+    setNftData(nftDataResponse.data.result);
   };
 
   const connectWallet = async () => {
@@ -61,24 +62,66 @@ function App() {
       <div className="row justify-content-center text-center mt-5">
         <form className="col-lg-6 shadow p-3 mb-5 bg-white rounded">
           <h4>Mint Portal</h4>
-          <h5>Please connect your wallet</h5>
-          {!address && <Button onClick={connectWallet}>Connect Wallet</Button>}
-          <div className="my-3 card gap-3">
-            <label>{address ? address : 'Wallet Address'}</label>
-            <input
-              ref={mintAmountRef}
-              className="mx-2"
-              type="number"
-              defaultValue={1}
-              min={1}
-              max={5}
-            />
-            <label>Please select the number of NFTs to mint (1-5)</label>
-            <Button onClick={mint}>Mint</Button>
-          </div>
-          <label>Price 0.05 ETH each mint</label>
-          <h5 className='mt-2'>Tokens Minted {tokensMinted}/1000</h5>
+          {!address ? (
+            <>
+              <h5>Please connect your wallet</h5>
+              <Button onClick={connectWallet}>Connect Wallet</Button>
+            </>
+          ) : (
+            <div className="my-3 card gap-3">
+              <label>{address ? address : 'Wallet Address'}</label>
+              <input
+                ref={mintAmountRef}
+                className="mx-2"
+                type="number"
+                defaultValue={1}
+                min={1}
+                max={5}
+              />
+              <label>Please select the number of NFTs to mint (1-5)</label>
+              <Button onClick={mint}>Mint</Button>
+              <label>Price 0.05 Rinkeby ETH each mint</label>
+            </div>
+          )}
+
+          <h5 className="mt-2">Tokens Minted {nftData?.length}/1000</h5>
         </form>
+      </div>
+      <div className="row items mt-3">
+        {nftData?.map((nft) => {
+          return (
+            <div
+              key={`exo_${nft.tokenID}`}
+              className="col-12 col-sm-6 col-lg-3 mb-3 item"
+            >
+              <div className="card">
+                <div className="image-over">
+                  <img
+                    className="card-img-top"
+                    src={IMG_PATH + nft.tokenID + '.png'}
+                    alt=""
+                  />
+                </div>
+                <div className="card-caption col-12 p-0">
+                  <div className="card-body">
+                    <h5 className="mb-0">
+                      {nft.tokenName + ' #' + nft.tokenID}
+                    </h5>
+                    <h6 className="mt-2">Owner: {nft.to}</h6>
+                    <div className="card-bottom d-flex justify-content-between">
+                      {address && (
+                        <Button className="btn btn-bordered-white btn-smaller mt-3">
+                          <i className="mr-2" />
+                          Buy Now
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
